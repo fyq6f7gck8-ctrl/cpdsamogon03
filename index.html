@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#070707">
+<link rel="manifest" href="manifest.json">
+<title>MoonAI Ultimate</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:
+linear-gradient(rgba(0,0,0,.82),rgba(0,0,0,.92)),
+url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2200&auto=format&fit=crop');
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+color:white;
+padding:18px;
+}
+
+.container{max-width:1700px;margin:auto}
+
+.header,.panel,.card{
+background:rgba(0,0,0,.42);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 15px 60px rgba(0,0,0,.35);
+}
+
+.header{
+padding:32px;
+border-radius:34px;
+margin-bottom:20px;
+}
+
+.logo{
+font-size:3rem;
+font-weight:900;
+margin-bottom:8px;
+}
+
+.sub{
+color:#b9b9b9;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+padding:22px;
+border-radius:26px;
+}
+
+.card h3{
+color:#aaa;
+margin-bottom:10px;
+}
+
+.value{
+font-size:2rem;
+font-weight:800;
+}
+
+.grid{
+display:grid;
+grid-template-columns:380px 1fr;
+gap:20px;
+}
+
+.panel{
+padding:24px;
+border-radius:30px;
+margin-bottom:20px;
+}
+
+.panel h2{
+margin-bottom:20px;
+}
+
+input,select,button{
+width:100%;
+padding:16px;
+border-radius:18px;
+border:none;
+margin-bottom:12px;
+font-size:1rem;
+}
+
+input,select{
+background:rgba(255,255,255,.06);
+color:white;
+border:1px solid rgba(255,255,255,.08);
+}
+
+button{
+background:white;
+color:black;
+font-weight:800;
+cursor:pointer;
+}
+
+.quick{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.quick button{
+padding:10px;
+font-size:.9rem;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.08);
+text-align:left;
+}
+
+th{
+color:#aaa;
+}
+
+.tag{
+display:inline-block;
+padding:10px 14px;
+border-radius:14px;
+background:rgba(255,255,255,.08);
+margin:5px;
+}
+
+.green{color:#4ade80}
+.red{color:#f87171}
+.blue{color:#60a5fa}
+.orange{color:#fb923c}
+
+.pay{
+background:#22c55e;
+color:white;
+padding:10px 14px;
+width:auto;
+}
+
+.delete{
+background:#ef4444;
+color:white;
+padding:10px 14px;
+width:auto;
+}
+
+.ai{
+line-height:1.9;
+color:#ddd;
+}
+
+@media(max-width:1000px){
+.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<div class="logo">🥃 MoonAI Ultimate</div>
+<div class="sub">
+AI CRM для самогонки • Долги • Остатки • Аналитика • Прогнозы
+</div>
+</div>
+
+<div class="stats">
+
+<div class="card">
+<h3>Выручка</h3>
+<div class="value green" id="revenue">0 ₽</div>
+</div>
+
+<div class="card">
+<h3>Долги</h3>
+<div class="value red" id="debts">0 ₽</div>
+</div>
+
+<div class="card">
+<h3>Себе</h3>
+<div class="value blue" id="myMoney">0 ₽</div>
+</div>
+
+<div class="card">
+<h3>Папе</h3>
+<div class="value orange" id="fatherMoney">0 ₽</div>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div>
+
+<div class="panel">
+
+<h2>➕ Новая продажа</h2>
+
+<input id="client" placeholder="Клиент">
+
+<select id="flavor">
+<option>Коньяк классический</option>
+<option>Миндальный</option>
+<option>Чернослив</option>
+<option>Смородина</option>
+<option>Ананас</option>
+<option>Виски</option>
+<option>Чистый</option>
+</select>
+
+<input id="liters" type="number" placeholder="Литры">
+
+<input id="paid" type="number" placeholder="Оплатил сейчас">
+
+<select id="moneyTo">
+<option value="me">Деньги себе</option>
+<option value="father">Деньги папе</option>
+</select>
+
+<button onclick="addSale()">Добавить продажу</button>
+
+</div>
+
+<div class="panel">
+
+<h2>📦 Остатки</h2>
+
+<select id="stockFlavor">
+<option>Коньяк классический</option>
+<option>Миндальный</option>
+<option>Чернослив</option>
+<option>Смородина</option>
+<option>Ананас</option>
+<option>Виски</option>
+<option>Чистый</option>
+</select>
+
+<input id="homeStock" type="number" placeholder="Дома литров">
+<input id="workStock" type="number" placeholder="На работе литров">
+
+<button onclick="saveStock()">Сохранить остатки</button>
+
+<div id="stocks"></div>
+
+</div>
+
+<div class="panel">
+
+<h2>💸 Расходы</h2>
+
+<select id="expenseType">
+<option>Сахар</option>
+<option>Дрожжи</option>
+<option>Присадки</option>
+<option>Бутылки</option>
+<option>Крышки</option>
+<option>Этикетки</option>
+<option>Доставка</option>
+<option>Прочее</option>
+</select>
+
+<input id="expenseAmount" type="number" placeholder="Сумма">
+
+<button onclick="addExpense()">Добавить расход</button>
+
+<div id="expenses"></div>
+
+</div>
+
+<div class="panel">
+
+<h2>🤖 AI Аналитика</h2>
+
+<div class="ai" id="aiBox"></div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="panel">
+
+<h2>🧾 Продажи</h2>
+
+<div style="overflow:auto">
+
+<table>
+
+<thead>
+<tr>
+<th>Клиент</th>
+<th>Вкус</th>
+<th>Л</th>
+<th>Цена</th>
+<th>Оплата</th>
+<th>Долг</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="salesTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>💳 Долги клиентов</h2>
+
+<div style="overflow:auto">
+
+<table>
+
+<thead>
+<tr>
+<th>Клиент</th>
+<th>Долг</th>
+<th>Оплатить</th>
+</tr>
+</thead>
+
+<tbody id="debtTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>🔥 Прогноз продаж</h2>
+
+<div class="ai" id="forecast"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js');
+}
+
+const PRICE = 600;
+
+let sales = JSON.parse(localStorage.getItem('ultimate_sales') || '[]');
+let expensesData = JSON.parse(localStorage.getItem('ultimate_expenses') || '[]');
+let stockData = JSON.parse(localStorage.getItem('ultimate_stocks') || '{}');
+
+function save(){
+localStorage.setItem('ultimate_sales', JSON.stringify(sales));
+localStorage.setItem('ultimate_expenses', JSON.stringify(expensesData));
+localStorage.setItem('ultimate_stocks', JSON.stringify(stockData));
+}
+
+function addSale(){
+
+const litersValue = Number(liters.value);
+
+const sale = {
+client: client.value || 'Клиент',
+flavor: flavor.value,
+liters: litersValue,
+price: litersValue * PRICE,
+paid: Number(paid.value),
+moneyTo: moneyTo.value
+};
+
+sales.unshift(sale);
+
+if(stockData[sale.flavor]){
+stockData[sale.flavor].work -= litersValue;
+
+if(stockData[sale.flavor].work < 0){
+stockData[sale.flavor].work = 0;
+}
+}
+
+save();
+render();
+
+client.value='';
+liters.value='';
+paid.value='';
+}
+
+function payDebt(clientName){
+
+const amount = Number(prompt('Сколько оплатил клиент?'));
+
+if(!amount) return;
+
+let remaining = amount;
+
+sales.forEach(s=>{
+
+let debt = s.price - s.paid;
+
+if(s.client === clientName && debt > 0 && remaining > 0){
+
+if(remaining >= debt){
+s.paid += debt;
+remaining -= debt;
+}else{
+s.paid += remaining;
+remaining = 0;
+}
+
+}
+
+});
+
+save();
+render();
+}
+
+function addExpense(){
+
+expensesData.unshift({
+type: expenseType.value,
+amount: Number(expenseAmount.value)
+});
+
+save();
+render();
+
+expenseAmount.value='';
+}
+
+function saveStock(){
+
+stockData[stockFlavor.value] = {
+home: Number(homeStock.value),
+work: Number(workStock.value)
+};
+
+save();
+render();
+
+homeStock.value='';
+workStock.value='';
+}
+
+function deleteSale(index){
+sales.splice(index,1);
+save();
+render();
+}
+
+function renderSales(){
+
+salesTable.innerHTML='';
+
+sales.forEach((s,index)=>{
+
+const debt = s.price - s.paid;
+
+salesTable.innerHTML += `
+<tr>
+<td>${s.client}</td>
+<td>${s.flavor}</td>
+<td>${s.liters} л</td>
+<td>${s.price} ₽</td>
+<td>${s.paid} ₽</td>
+<td>${debt > 0 ? debt + ' ₽' : 'Нет'}</td>
+<td>
+<button class="delete" onclick="deleteSale(${index})">Удалить</button>
+</td>
+</tr>
+`;
+
+});
+
+}
+
+function renderDebts(){
+
+const map = {};
+
+sales.forEach(s=>{
+
+const debt = s.price - s.paid;
+
+if(debt > 0){
+
+if(!map[s.client]){
+map[s.client]=0;
+}
+
+map[s.client]+=debt;
+
+}
+
+});
+
+debtTable.innerHTML='';
+
+Object.keys(map).forEach(name=>{
+
+debtTable.innerHTML += `
+<tr>
+<td>${name}</td>
+<td>${map[name]} ₽</td>
+<td>
+
+<button class="pay" onclick="payDebt('${name}')">
+💸 Внести оплату
+</button>
+
+<div class="quick">
+<button onclick="quickPay('${name}',600)">+600</button>
+<button onclick="quickPay('${name}',1200)">+1200</button>
+<button onclick="quickPay('${name}',3000)">+3000</button>
+</div>
+
+</td>
+</tr>
+`;
+
+});
+
+}
+
+function quickPay(clientName, amount){
+
+let remaining = amount;
+
+sales.forEach(s=>{
+
+let debt = s.price - s.paid;
+
+if(s.client === clientName && debt > 0 && remaining > 0){
+
+if(remaining >= debt){
+s.paid += debt;
+remaining -= debt;
+}else{
+s.paid += remaining;
+remaining = 0;
+}
+
+}
+
+});
+
+save();
+render();
+}
+
+function renderStocks(){
+
+stocks.innerHTML='';
+
+Object.keys(stockData).forEach(name=>{
+
+const item = stockData[name];
+
+stocks.innerHTML += `
+<div class="tag">
+🥃 ${name}<br>
+🏠 Дома: ${item.home} л<br>
+🏢 Работа: ${item.work} л
+</div>
+`;
+
+});
+
+}
+
+function renderExpenses(){
+
+expenses.innerHTML='';
+
+expensesData.slice(0,10).forEach(e=>{
+
+expenses.innerHTML += `
+<div class="tag">
+💸 ${e.type}: ${e.amount} ₽
+</div>
+`;
+
+});
+
+}
+
+function renderStats(){
+
+const revenueTotal = sales.reduce((a,b)=>a+b.price,0);
+
+const debtTotal = sales.reduce((a,b)=>a+(b.price-b.paid),0);
+
+const myTotal = sales.filter(s=>s.moneyTo==='me')
+.reduce((a,b)=>a+b.paid,0);
+
+const fatherTotal = sales.filter(s=>s.moneyTo==='father')
+.reduce((a,b)=>a+b.paid,0);
+
+revenue.innerText = revenueTotal + ' ₽';
+debts.innerText = debtTotal + ' ₽';
+myMoney.innerText = myTotal + ' ₽';
+fatherMoney.innerText = fatherTotal + ' ₽';
+
+}
+
+function renderAI(){
+
+if(sales.length === 0){
+
+aiBox.innerHTML = 'Добавь продажи — AI начнёт анализировать бизнес.';
+
+return;
+}
+
+const flavors = {};
+
+sales.forEach(s=>{
+
+if(!flavors[s.flavor]){
+flavors[s.flavor]=0;
+}
+
+flavors[s.flavor]+=s.liters;
+
+});
+
+const top = Object.entries(flavors).sort((a,b)=>b[1]-a[1])[0];
+
+const debt = sales.reduce((a,b)=>a+(b.price-b.paid),0);
+
+let html='';
+
+html += `🔥 Самый ходовой вкус: <b>${top[0]}</b><br><br>`;
+
+html += `📈 Продано литров: <b>${sales.reduce((a,b)=>a+b.liters,0)} л</b><br><br>`;
+
+if(debt > 10000){
+html += `⚠️ Много долгов. AI советует собрать оплату.<br><br>`;
+}else{
+html += `✅ Долги под контролем.<br><br>`;
+}
+
+html += `🤖 Перед выходными держи больше "${top[0]}".`;
+
+aiBox.innerHTML = html;
+
+}
+
+function renderForecast(){
+
+const avg = sales.length
+? sales.reduce((a,b)=>a+b.price,0) / sales.length
+: 0;
+
+forecast.innerHTML = `
+🎉 Ближайшие выходные могут поднять продажи.<br><br>
+
+📊 Примерный прогноз:
+<b>${Math.round(avg * 1.5)} ₽</b><br><br>
+
+🥃 Рекомендуется пополнить популярные вкусы.
+`;
+
+}
+
+function render(){
+
+renderSales();
+renderDebts();
+renderStocks();
+renderExpenses();
+renderStats();
+renderAI();
+renderForecast();
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
